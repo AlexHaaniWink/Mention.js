@@ -39,8 +39,9 @@
                     if(settings.emptyQuery){
 	                    var q = (this.query.toLowerCase()),
 	                    	caratPos = this.$element[0].selectionStart,
-	                    	lastChar = q.slice(caratPos-1,caratPos);
-	                    if(lastChar==settings.delimiter){
+	                    	lastChar = q.slice(caratPos-1,caratPos),
+                            	beforeLastChar = q.slice(caratPos-2,caratPos-1);
+	                    if((!beforeLastChar || beforeLastChar.match(new RegExp('[^\\w]'))) && lastChar==settings.delimiter){
 		                    return true;
 	                    }
                     }
@@ -48,11 +49,11 @@
                     for (i in settings.queryBy) {
                         if (itemProps[settings.queryBy[i]]) {
                             var item = itemProps[settings.queryBy[i]].toLowerCase(),
-                                usernames = (this.query.toLowerCase()).match(new RegExp(settings.delimiter + '\\w+', "g")),
+                                usernames = (this.query.toLowerCase()).match(new RegExp('([^\\w]|^)' + settings.delimiter + '\\w+', "g")),
                                 j;
                             if ( !! usernames) {
                                 for (j = 0; j < usernames.length; j++) {
-                                    var username = (usernames[j].substring(1)).toLowerCase(),
+                                    var username = (usernames[j].trim().substring(1)).toLowerCase(),
                                         re = new RegExp(settings.delimiter + item, "g"),
                                         used = ((this.query.toLowerCase()).match(re));
 
